@@ -120,7 +120,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			}
 		}
 	}
-	printf("dvx");
+	//printf("dvx");
 	// vez a dama y
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x + i, y)) {
@@ -141,7 +141,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			}
 		}
 	}
-	printf("dvy");
+	//printf("dvy");
 	// strelec a dama /
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x + i, y + i)) {
@@ -162,7 +162,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			}
 		}
 	}
-	printf("dsx");
+	//printf("dsx");
 	// strelec a dama \/
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x + i, y - i)) {
@@ -183,7 +183,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			}
 		}
 	}
-	printf("dsy");
+	//printf("dsy");
 	// pesak
 	if (existencePolicka(x + 1, y + 1)) {
 		if (figurky[x + 1][y + 1] == 'P' && !barvy[x + 1][y + 1]) {
@@ -195,7 +195,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			return 1;
 		}
 	}
-	printf("p");
+	//printf("p");
 
 	// kun
 	if (existencePolicka(x + 1, y + 2)) {
@@ -238,7 +238,7 @@ int kontrolaSachu(int x, int y, int barva) {
 			return 1;
 		}
 	}
-	printf("h");
+	//printf("h");
 	return 0;
 }
 
@@ -248,13 +248,13 @@ void pohybVez(int x, int y, int barva) {
 		// x
 		if (existencePolicka(x + i, y)) {
 			if (figurky[x + i][y] == ' ') {
-				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][0] = x + i;
 				moznePohyby[moznePohybyIndex][1] = y;
 				moznePohybyIndex++;
 			}
 			else {
 				if (barvy[x + i][y] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x + 1;
+					moznePohyby[moznePohybyIndex][0] = x + i;
 					moznePohyby[moznePohybyIndex][1] = y;
 					moznePohybyIndex++;
 					break;
@@ -272,7 +272,7 @@ void pohybVez(int x, int y, int barva) {
 			}
 			else {
 				if (barvy[x - i][y] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x - 1;
+					moznePohyby[moznePohybyIndex][0] = x - i;
 					moznePohyby[moznePohybyIndex][1] = y;
 					moznePohybyIndex++;
 					break;
@@ -321,17 +321,17 @@ void pohybVez(int x, int y, int barva) {
 }
 
 void pohybStrelec(int x, int y, int barva) {
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x + i, y + i)) {
 			if (figurky[x + i][y + i] == ' ') {
-				moznePohyby[moznePohybyIndex][0] = x + 1;
-				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohyby[moznePohybyIndex][0] = x + i;
+				moznePohyby[moznePohybyIndex][1] = y + i;
 				moznePohybyIndex++;
 			}
 			else {
 				if (barvy[x + i][y + i] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x + 1;
-					moznePohyby[moznePohybyIndex][1] = y + 1;
+					moznePohyby[moznePohybyIndex][0] = x + i;
+					moznePohyby[moznePohybyIndex][1] = y + i;
 					moznePohybyIndex++;
 					break;
 				}
@@ -339,17 +339,17 @@ void pohybStrelec(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x - i, y + i)) {
 			if (figurky[x - i][y + i] == ' ') {
-				moznePohyby[moznePohybyIndex][0] = x - 1;
-				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohyby[moznePohybyIndex][0] = x - i;
+				moznePohyby[moznePohybyIndex][1] = y + i;
 				moznePohybyIndex++;
 			}
 			else {
 				if (barvy[x - i][y + i] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x - 1;
-					moznePohyby[moznePohybyIndex][1] = y + 1;
+					moznePohyby[moznePohybyIndex][0] = x - i;
+					moznePohyby[moznePohybyIndex][1] = y + i;
 					moznePohybyIndex++;
 					break;
 				}
@@ -357,17 +357,17 @@ void pohybStrelec(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x + i, y - i)) {
 			if (figurky[x + i][y - i] == ' ') {
-				moznePohyby[moznePohybyIndex][0] = x + 1;
-				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohyby[moznePohybyIndex][0] = x + i;
+				moznePohyby[moznePohybyIndex][1] = y - i;
 				moznePohybyIndex++;
 			}
 			else {
 				if (barvy[x + i][y - i] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x + 1;
-					moznePohyby[moznePohybyIndex][1] = y - 1;
+					moznePohyby[moznePohybyIndex][0] = x + i;
+					moznePohyby[moznePohybyIndex][1] = y - i;
 					moznePohybyIndex++;
 					break;
 				}
@@ -375,17 +375,17 @@ void pohybStrelec(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x - i, y - i)) {
 			if (figurky[x - i][y - i] == ' ') {
-				moznePohyby[moznePohybyIndex][0] = x - 1;
-				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohyby[moznePohybyIndex][0] = x - i;
+				moznePohyby[moznePohybyIndex][1] = y - i;
 				moznePohybyIndex++;
 			}
 			else {
 				if (barvy[x - i][y - i] != barva) {
-					moznePohyby[moznePohybyIndex][0] = x - 1;
-					moznePohyby[moznePohybyIndex][1] = y - 1;
+					moznePohyby[moznePohybyIndex][0] = x - i;
+					moznePohyby[moznePohybyIndex][1] = y - i;
 					moznePohybyIndex++;
 					break;
 				}
@@ -719,10 +719,10 @@ int main() {
 			}
 			printf("\nspatne zvolene policko");
 		}
-		printf("\n%d", moznePohybyIndex);
+		//printf("\n%d", moznePohybyIndex);
+		printf("\nmozny tah:");
 		for (int i = 0; i < moznePohybyIndex; i++) {
-			printf("\n%d", i);
-			printf("\nmozny tah: %c%d", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
+			printf("\n %c%d ", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
 		}
 		
 		int end = 1;
@@ -750,6 +750,7 @@ int main() {
 							end = 0;
 							break;
 						}
+						// upravit
 						else {
 							printf("\ntah nelze provest");
 						}
