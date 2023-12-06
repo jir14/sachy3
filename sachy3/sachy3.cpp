@@ -656,22 +656,11 @@ int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	}
 }
 
-void vypisBarvy() {
-	printf("\n");
-	for (int i = 0; i < 8; i++) {
-		printf("\n");
-		for (int j = 0; j < 8; j++) {
-			printf("%d", barvy[i][j]);
-		}
-	}
-}
-
 int main() {
 	int cisloTahu = 1;
 
 	while (!konec) {
 		vypisSachovnice(figurky, barvy);
-		//vypisBarvy();
 		int xs, xe;
 		char ys, ye;
 		moznePohybyIndex = 0;
