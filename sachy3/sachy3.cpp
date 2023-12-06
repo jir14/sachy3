@@ -690,35 +690,39 @@ void ulozitHru(char cislo,int barva) {
 		}
 	}
 	for (int i = 0; i < 9; i++) {
+		if (hrac1Jmeno[i] == '\0') {
+			hrac1Jmeno[i] = 32;
+		}
 		save[ukazatel] = hrac1Jmeno[i];
 		ukazatel++;
 	}
 	for (int i = 0; i < 9; i++) {
+		if (hrac2Jmeno[i] == '\0') {
+			hrac2Jmeno[i] = 32;
+		}
 		save[ukazatel] = hrac2Jmeno[i];
 		ukazatel++;
 	}
-	printf("%s", save);
-	save[ukazatel] = barva + '0';
+	save[ukazatel] = barva;
 
 	fprintf(fptr, save);
 
 	fclose(fptr);
 }
 
-void nacistHru(int cislo) {
+void nacistHru(int cislo, int* cisloTahu) {
 	char save[150];
 	int ukazatel = 0;
-	int cisloTahu;
 
 	FILE* fptr;
-	char cisloHry[] = { cislo + 0 };
+	char cisloHry[2] = { cislo + '0' };
 	fptr = fopen(cisloHry, "r");
 
 	fgets(save, 150, fptr);
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			barvy[i][j] = save[ukazatel];
+			barvy[i][j] = save[ukazatel] - 48;
 			ukazatel++;
 		}
 	}
@@ -729,22 +733,28 @@ void nacistHru(int cislo) {
 		}
 	}
 	for (int i = 0; i < 9; i++) {
+		if (hrac1Jmeno[i] == 32) {
+			hrac1Jmeno[i] = '\0';
+		}
 		hrac1Jmeno[i] = save[ukazatel];
 		ukazatel++;
 	}
 	for (int i = 0; i < 9; i++) {
+		if (hrac2Jmeno[i] == 32) {
+			hrac2Jmeno[i] = '\0';
+		}
 		hrac2Jmeno[i] = save[ukazatel];
 		ukazatel++;
 	}
-	cisloTahu = save[ukazatel];
+	*cisloTahu = save[ukazatel];
 
 	fclose(fptr);
 }
 
-void menu(){
+void menu(int* cisloTahu){
 	char volba;
 	printf("Vytejte ve hre SACHY!\n");
-	printf("hrat - h\nnacist - n\n");
+	printf("hrat - h\nnacist - n\nukoncit - q\n");
 	scanf(" %c", &volba);
 
 	if (volba == 'h') {
@@ -752,26 +762,40 @@ void menu(){
 		scanf(" %s", &hrac1Jmeno);
 		printf("\nzadejte jmeno cerneho hrace: ");
 		scanf(" %s", &hrac2Jmeno);
-		getchar();
 	}
 	if (volba == 'n') {
 		int cisloHry;
 		printf("zadejte cislo ulozene hry: ");
 		scanf(" %d", &cisloHry);
-		nacistHru(cisloHry);
+		nacistHru(cisloHry, cisloTahu);
+	}
+	if (volba == 'q') {
+		exit(0);
 	}
 }
 
-int main() {
-	menu();
+void vypisBarvy() {
+	for (int i = 0; i < 8; i++) {
+		printf("\n");
+		for (int j = 0; j < 8; j++) {
+			printf("%d", barvy[i][j]);
+		}
+	}
+	printf("\n");
+}
 
+int main() {
+	menu:
+	system("cls");
 	int cisloTahu = 1;
+	menu(&cisloTahu);
 
 	while (!konec) {
 		sach:
-		//system("cls");
-		printf("\n");
+		system("cls");
+		//printf("\n");
 		vypisSachovnice(figurky, barvy);
+		//vypisBarvy();
 		int xs, xe;
 		char ys, ye;
 		int end = 1;
@@ -800,7 +824,7 @@ int main() {
 			if (ys == 's') {
 				ulozitHru(xs, aktualniBarva);
 				end = 0;
-				break;
+				goto menu;
 			}
 			xs = xs - 1;
 			ys = ys - 97;
