@@ -244,7 +244,7 @@ int kontrolaSachu(int x, int y, int barva) {
 
 // souradnice figurky
 void pohybVez(int x, int y, int barva) {
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		// x
 		if (existencePolicka(x + i, y)) {
 			if (figurky[x + i][y] == ' ') {
@@ -263,7 +263,7 @@ void pohybVez(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x - i, y)) {
 			if (figurky[x - i][y] == ' ') {
 				moznePohyby[moznePohybyIndex][0] = x - i;
@@ -281,7 +281,7 @@ void pohybVez(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		// y
 		if (existencePolicka(x, y + i)) {
 			if (figurky[x][y + i] == ' ') {
@@ -300,7 +300,7 @@ void pohybVez(int x, int y, int barva) {
 			}
 		}
 	}
-	for (int i = 0; i < 7; i++) {
+	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x, y - i)) {
 			if (figurky[x][y - i] == ' ') {
 				moznePohyby[moznePohybyIndex][0] = x;
@@ -722,8 +722,9 @@ int main() {
 		//printf("\n%d", moznePohybyIndex);
 		printf("\nmozny tah:");
 		for (int i = 0; i < moznePohybyIndex; i++) {
-			printf("\n %c%d ", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
+			printf(" %c%d ", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
 		}
+		printf("\n");
 		
 		int end = 1;
 
