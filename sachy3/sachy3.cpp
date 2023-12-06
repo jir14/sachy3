@@ -3,11 +3,10 @@
 
 #include "sachy3.h"
 #include <stdlib.h>
-
-using namespace std;
+#include <stdio.h>
 
 int kralPoloha[2][2] = { {8,3}, {0,3} };
-int moznePohyby[][2] = { {} };
+int moznePohyby[64][2] = { {} };
 int moznePohybyIndex = 0;
 int konec = 0;
 
@@ -249,47 +248,73 @@ void pohybVez(int x, int y, int barva) {
 		// x
 		if (existencePolicka(x + i, y)) {
 			if (figurky[x + i][y] == ' ') {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + i;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y;
+				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][1] = y;
+				moznePohybyIndex++;
 			}
 			else {
+				if (barvy[x + i][y] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x + 1;
+					moznePohyby[moznePohybyIndex][1] = y;
+					moznePohybyIndex++;
+					break;
+				}
 				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x - i, y)) {
-			if (figurky[x - i][y] != ' ') {
+			if (figurky[x - i][y] == ' ') {
+				moznePohyby[moznePohybyIndex][0] = x - i;
+				moznePohyby[moznePohybyIndex][1] = y;
+				moznePohybyIndex++;
+			}
+			else {
 				if (barvy[x - i][y] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - i;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y;
+					moznePohyby[moznePohybyIndex][0] = x - 1;
+					moznePohyby[moznePohybyIndex][1] = y;
+					moznePohybyIndex++;
 					break;
 				}
+				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		// y
 		if (existencePolicka(x, y + i)) {
-			if (figurky[x + i][y] != ' ') {
-				if (barvy[x][y + i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + i;
-				}
-				else {
+			if (figurky[x][y + i] == ' ') {
+				moznePohyby[moznePohybyIndex][0] = x;
+				moznePohyby[moznePohybyIndex][1] = y + i;
+				moznePohybyIndex++;
+			}
+			else {
+				if (barvy[x][y + 1] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x;
+					moznePohyby[moznePohybyIndex][1] = y + i;
+					moznePohybyIndex++;
 					break;
 				}
+				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x, y - i)) {
-			if (figurky[x][y - i] != ' ') {
-				if (barvy[x][y - i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - i;
+			if (figurky[x][y - i] == ' ') {
+				moznePohyby[moznePohybyIndex][0] = x;
+				moznePohyby[moznePohybyIndex][1] = y - i;
+				moznePohybyIndex++;
+			}
+			else {
+				if (barvy[x][y - 1] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x;
+					moznePohyby[moznePohybyIndex][1] = y - i;
+					moznePohybyIndex++;
 					break;
 				}
+				break;
 			}
 		}
 	}
@@ -298,72 +323,72 @@ void pohybVez(int x, int y, int barva) {
 void pohybStrelec(int x, int y, int barva) {
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x + i, y + i)) {
-			if (figurky[x + i][y + i] != ' ') {
-				if (barvy[x + i][y + i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + i;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + i;
-				}
-				break;
-			}
 			if (figurky[x + i][y + i] == ' ') {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + i;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + i;
+				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohybyIndex++;
 			}
 			else {
+				if (barvy[x + i][y + i] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x + 1;
+					moznePohyby[moznePohybyIndex][1] = y + 1;
+					moznePohybyIndex++;
+					break;
+				}
 				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x - i, y + i)) {
-			if (figurky[x - i][y + i] != ' ') {
-				if (barvy[x - i][y + i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - i;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + i;
-				}
-				break;
-			}
 			if (figurky[x - i][y + i] == ' ') {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - i;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + i;
+				moznePohyby[moznePohybyIndex][0] = x - 1;
+				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohybyIndex++;
 			}
 			else {
+				if (barvy[x - i][y + i] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x - 1;
+					moznePohyby[moznePohybyIndex][1] = y + 1;
+					moznePohybyIndex++;
+					break;
+				}
 				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x + i, y - i)) {
-			if (figurky[x + i][y - i] != ' ') {
-				if (barvy[x + i][y - i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + i;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - i;
-				}
-				break;
-			}
 			if (figurky[x + i][y - i] == ' ') {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + i;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - i;
+				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohybyIndex++;
 			}
 			else {
+				if (barvy[x + i][y - i] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x + 1;
+					moznePohyby[moznePohybyIndex][1] = y - 1;
+					moznePohybyIndex++;
+					break;
+				}
 				break;
 			}
 		}
 	}
 	for (int i = 0; i < 7; i++) {
 		if (existencePolicka(x - i, y - i)) {
-			if (figurky[x - i][y - i] != ' ') {
-				if (barvy[x - i][y - i] != barva) {
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - i;
-					moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - i;
-				}
-				break;
-			}
 			if (figurky[x - i][y - i] == ' ') {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - i;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - i;
+				moznePohyby[moznePohybyIndex][0] = x - 1;
+				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohybyIndex++;
 			}
 			else {
+				if (barvy[x - i][y - i] != barva) {
+					moznePohyby[moznePohybyIndex][0] = x - 1;
+					moznePohyby[moznePohybyIndex][1] = y - 1;
+					moznePohybyIndex++;
+					break;
+				}
 				break;
 			}
 		}
@@ -377,66 +402,114 @@ void pohybKralovna(int x, int y, int barva) {
 
 void pohybKun(int x, int y, int barva) {
 	if (existencePolicka(x + 1, y + 2)) {
-		if (figurky[x + 1][y + 2] != ' ') {
+		if (figurky[x + 1][y + 2] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x + 1;
+			moznePohyby[moznePohybyIndex][1] = y + 2;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x + 1][y + 2] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 1;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 2;
+				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][1] = y + 2;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x - 1, y + 2)) {
-		if (figurky[x - 1][y + 2] != ' ') {
+		if (figurky[x - 1][y + 2] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x - 1;
+			moznePohyby[moznePohybyIndex][1] = y + 2;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x - 1][y + 2] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 1;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 2;
+				moznePohyby[moznePohybyIndex][0] = x - 1;
+				moznePohyby[moznePohybyIndex][1] = y + 2;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x + 1, y - 2)) {
-		if (figurky[x + 1][y - 2] != ' ') {
+		if (figurky[x + 1][y - 2] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x + 1;
+			moznePohyby[moznePohybyIndex][1] = y - 2;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x + 1][y - 2] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 1;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 2;
+				moznePohyby[moznePohybyIndex][0] = x + 1;
+				moznePohyby[moznePohybyIndex][1] = y - 2;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x - 1, y - 2)) {
-		if (figurky[x - 1][y - 2] != ' ') {
+		if (figurky[x - 1][y - 2] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x - 1;
+			moznePohyby[moznePohybyIndex][1] = y - 2;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x - 1][y - 2] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 1;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 2;
+				moznePohyby[moznePohybyIndex][0] = x - 1;
+				moznePohyby[moznePohybyIndex][1] = y - 2;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x + 2, y + 1)) {
-		if (figurky[x + 2][y + 1] != ' ') {
+		if (figurky[x + 2][y + 1] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x + 2;
+			moznePohyby[moznePohybyIndex][1] = y + 1;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x + 2][y + 1] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 2;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 1;
+				moznePohyby[moznePohybyIndex][0] = x + 2;
+				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x + 2, y - 1)) {
-		if (figurky[x + 2][y - 1] != ' ') {
+		if (figurky[x + 2][y - 1] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x + 2;
+			moznePohyby[moznePohybyIndex][1] = y - 1;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x + 2][y - 1] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 2;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 1;
+				moznePohyby[moznePohybyIndex][0] = x + 2;
+				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x - 2, y + 1)) {
-		if (figurky[x - 2][y + 1] != ' ') {
+		if (figurky[x - 2][y + 1] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x - 2;
+			moznePohyby[moznePohybyIndex][1] = y + 1;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x - 2][y + 1] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 2;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 1;
+				moznePohyby[moznePohybyIndex][0] = x - 2;
+				moznePohyby[moznePohybyIndex][1] = y + 1;
+				moznePohybyIndex++;
 			}
 		}
 	}
 	if (existencePolicka(x - 2, y - 1)) {
-		if (figurky[x - 2][y - 1] != ' ') {
+		if (figurky[x - 2][y - 1] == ' ') {
+			moznePohyby[moznePohybyIndex][0] = x - 2;
+			moznePohyby[moznePohybyIndex][1] = y - 1;
+			moznePohybyIndex++;
+		}
+		else {
 			if (barvy[x - 2][y - 1] != barva) {
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 2;
-				moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 1;
+				moznePohyby[moznePohybyIndex][0] = x - 2;
+				moznePohyby[moznePohybyIndex][1] = y - 1;
+				moznePohybyIndex++;
 			}
 		}
 	}
@@ -449,9 +522,6 @@ void pohybPesak(int x, int y, int barva) {
 				moznePohyby[moznePohybyIndex][0] = x + 1;
 				moznePohyby[moznePohybyIndex][1] = y;
 				moznePohybyIndex++;
-				printf("\npes1");
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
-				printf("\nmozny tah: %c%d", moznePohyby[moznePohybyIndex][1] + 97, moznePohyby[moznePohybyIndex][0] + 1);
 			}
 		}
 		if (existencePolicka(x + 1, y - 1)) {
@@ -459,25 +529,16 @@ void pohybPesak(int x, int y, int barva) {
 				moznePohyby[moznePohybyIndex][0] = x + 1;
 				moznePohyby[moznePohybyIndex][1] = y - 1;
 				moznePohybyIndex++;
-				printf("\npes2");
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
-				printf("\nmozny tah: %c%d", moznePohyby[moznePohybyIndex][1] + 97, moznePohyby[moznePohybyIndex][0] + 1);
 			}
 		}
 		if (existencePolicka(x + 1, y + 1)) {
 			if (figurky[x + 1][y + 1] != ' ' && barvy[x + 1][y + 1] == 0) {
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
 				moznePohyby[moznePohybyIndex][0] = x + 1;
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
 				moznePohyby[moznePohybyIndex][1] = y + 1;
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
 				moznePohybyIndex++;
-				printf("\npes3");
-				printf("\nindex moznych tahu: %d", moznePohybyIndex);
-				printf("\nmozny tah: %c%d", moznePohyby[moznePohybyIndex][1] + 97, moznePohyby[moznePohybyIndex][0] + 1);
 			}
 		}
-	}
+	} 
 	else {
 		if (existencePolicka(x - 1, y)) {
 			if (figurky[x - 1][y] == ' ') {
@@ -506,50 +567,58 @@ void pohybPesak(int x, int y, int barva) {
 void pohybKral(int x, int y, int barva) {
 	if (existencePolicka(x, y + 1)) {
 		if ((figurky[x][y + 1] == ' ') || (barvy[x][y + 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 1;
+			moznePohyby[moznePohybyIndex][0] = x;
+			moznePohyby[moznePohybyIndex][1] = y + 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x, y - 1)) {
 		if ((figurky[x][y - 1] == ' ') || (barvy[x][y - 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 1;
+			moznePohyby[moznePohybyIndex][0] = x;
+			moznePohyby[moznePohybyIndex][1] = y - 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x - 1, y - 1)) {
 		if ((figurky[x - 1][y - 1] == ' ') || (barvy[x - 1][y - 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 1;
+			moznePohyby[moznePohybyIndex][0] = x - 1;
+			moznePohyby[moznePohybyIndex][1] = y - 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x + 1, y + 1)) {
 		if ((figurky[x + 1][y + 1] == ' ') || (barvy[x + 1][y + 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 1;
+			moznePohyby[moznePohybyIndex][0] = x + 1;
+			moznePohyby[moznePohybyIndex][1] = y + 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x + 1, y - 1)) {
 		if ((figurky[x + 1][y - 1] == ' ') || (barvy[x + 1][y - 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y - 1;
+			moznePohyby[moznePohybyIndex][0] = x + 1;
+			moznePohyby[moznePohybyIndex][1] = y - 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x - 1, y + 1)) {
 		if ((figurky[x - 1][y + 1] == ' ') || (barvy[x - 1][y + 1] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y + 1;
+			moznePohyby[moznePohybyIndex][0] = x - 1;
+			moznePohyby[moznePohybyIndex][1] = y + 1;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x + 1, y)) {
 		if ((figurky[x + 1][y] == ' ') || (barvy[x + 1][y] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x + 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y;
+			moznePohyby[moznePohybyIndex][0] = x + 1;
+			moznePohyby[moznePohybyIndex][1] = y;
+			moznePohybyIndex++;
 		}
 	}
 	if (existencePolicka(x - 1, y)) {
 		if ((figurky[x - 1][y] == ' ') || (barvy[x - 1][y] != barva)) {
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][0] = x - 1;
-			moznePohyby[sizeof(moznePohyby) / sizeof(moznePohyby[0])][1] = y;
+			moznePohyby[moznePohybyIndex][0] = x - 1;
+			moznePohyby[moznePohybyIndex][1] = y;
+			moznePohybyIndex++;
 		}
 	}
 }
@@ -652,6 +721,7 @@ int main() {
 		}
 		printf("\n%d", moznePohybyIndex);
 		for (int i = 0; i < moznePohybyIndex; i++) {
+			printf("\n%d", i);
 			printf("\nmozny tah: %c%d", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
 		}
 		
@@ -660,7 +730,7 @@ int main() {
 		while (end) {
 			printf("\nzadejte policko, na ktere tahnete: ");
 			scanf(" %c%d", &ye, &xe);
-			printf("\n%d", xe);
+			//printf("\n%d", xe);
 			xe = xe - 1;
 			ye = ye - 97;
 			//printf("\n aktualni %d-%d", xe, ye);
