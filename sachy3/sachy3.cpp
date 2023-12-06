@@ -4,7 +4,7 @@
 #include "sachy3.h"
 #include <stdlib.h>
 
-int kralPoloha[2][2] = { {0,3}, {7,3} };
+int kralPoloha[2][2] = { {7,3}, {0,3} };
 int moznePohyby[64][2] = { {} };
 int moznePohybyIndex = 0;
 int konec = 0;
@@ -143,18 +143,18 @@ int kontrolaSachu(int x, int y, int barva) {
 	//printf("dvy");
 	// strelec a dama /
 	for (int i = 1; i < 8; i++) {
-		if (existencePolicka(x + i, y + i)) {
-			if (figurky[x + i][y + i] != ' ') {
-				if ((figurky[x + i][y + i] == 'V' || figurky[x + i][y + i] == 'Q') && barvy[x + i][y + i] != barva) {
+		if (existencePolicka(x - i, y + i)) {
+			if (figurky[x - i][y + i] != ' ') {
+				if ((figurky[x - i][y + i] == 'V' || figurky[x - i][y + i] == 'Q') && barvy[x - i][y + i] != barva) {
 					return 1;
 				}
 				break;
 			}
 		}
 
-		if (existencePolicka(x - i, y - i)) {
-			if (figurky[x - i][y - i] != ' ') {
-				if ((figurky[x - i][y - i] == 'V' || figurky[x - i][y - i] == 'Q') && barvy[x - i][y - i] != barva) {
+		if (existencePolicka(x + i, y - i)) {
+			if (figurky[x + i][y - i] != ' ') {
+				if ((figurky[x + i][y - i] == 'V' || figurky[x + i][y - i] == 'Q') && barvy[x + i][y - i] != barva) {
 					return 1;
 				}
 				break;
@@ -164,18 +164,18 @@ int kontrolaSachu(int x, int y, int barva) {
 	//printf("dsx");
 	// strelec a dama \/
 	for (int i = 1; i < 8; i++) {
-		if (existencePolicka(x + i, y - i)) {
-			if (figurky[x + i][y - i] != ' ') {
-				if ((figurky[x + i][y - i] == 'V' || figurky[x + i][y - i] == 'Q') && barvy[x + i][y - i] != barva) {
+		if (existencePolicka(x - i, y - i)) {
+			if (figurky[x - i][y - i] != ' ') {
+				if ((figurky[x - i][y - i] == 'V' || figurky[x - i][y - i] == 'Q') && barvy[x - i][y - i] != barva) {
 					return 1;
 				}
 				break;
 			}
 		}
 
-		if (existencePolicka(x - i, y + i)) {
-			if (figurky[x + i][y - i] != ' ') {
-				if ((figurky[x - i][y + i] == 'V' || figurky[x - i][y + i] == 'Q') && barvy[x - i][y + i] != barva) {
+		if (existencePolicka(x + i, y + i)) {
+			if (figurky[x + i][y + i] != ' ') {
+				if ((figurky[x + i][y + i] == 'V' || figurky[x + i][y + i] == 'Q') && barvy[x + i][y + i] != barva) {
 					return 1;
 				}
 				break;
@@ -643,30 +643,16 @@ int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	barvy[xe][ye] = barvy[xs][ys];
 	barvy[xs][ys] = 2;
 
-	if (barva) {
-		printf("sach %d\n", kontrolaSachu(kralPoloha[0][0], kralPoloha[0][1], 1));
-		if (kontrolaSachu(kralPoloha[0][0], kralPoloha[0][1], 1)) {
-			printf("pes");
-			figurky[xs][ys] = figurky[xe][ye];
-			figurky[xe][ye] = temp;
-			barvy[xs][ys] = barvy[xe][ye];
-			barvy[xe][ye] = tempBarva;
-			return 0;
-		}
-		return 1;
+	printf("sach %d, barva %d\n", kontrolaSachu(kralPoloha[barva][0], kralPoloha[barva][1], barva), barva);
+	if (kontrolaSachu(kralPoloha[barva][0], kralPoloha[barva][1], barva)) {
+		printf("pes");
+		figurky[xs][ys] = figurky[xe][ye];
+		figurky[xe][ye] = temp;
+		barvy[xs][ys] = barvy[xe][ye];
+		barvy[xe][ye] = tempBarva;
+		return 0;
 	}
-	else {
-		printf("\nsach %d", kontrolaSachu(kralPoloha[0][0], kralPoloha[0][1], 1));
-		if (kontrolaSachu(kralPoloha[1][0], kralPoloha[1][1], 0)) {
-			printf("pes");
-			figurky[xs][ys] = figurky[xe][ye];
-			figurky[xe][ye] = temp;
-			barvy[xs][ys] = barvy[xe][ye];
-			barvy[xe][ye] = tempBarva;
-			return 0;
-		}
-		return 1;
-	}
+	return 1;
 }
 
 int main() {
@@ -688,6 +674,11 @@ int main() {
 		else {
 			printf("\nhraje cerna");
 		}
+		/*
+		while (kontrolaSachu(kralPoloha[aktualniBarva][0], kralPoloha[aktualniBarva][1], 1)) {
+
+		}
+		*/
 
 		while (true) {
 			printf("\nzadejte policko, ze ktereho tahnete: ");
@@ -765,13 +756,7 @@ int main() {
 			else {
 				printf("\npolicko neexistuje");
 			}
-			//printf("\npolicko neexistuje nebo tah nelze provest");
 		}
-
-		//printf("%d%d-%d%d", xs, ys, xe, ye);
-		//printf("%d", existencePolicka(xs, ys));
-		//printf("%d", existencePolicka(xe, ye));
-
 		cisloTahu++;
 	}
 }
