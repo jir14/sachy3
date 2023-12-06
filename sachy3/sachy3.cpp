@@ -634,6 +634,12 @@ void pohybKral(int x, int y, int barva) {
 
 int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	char temp;
+
+	if (figurky[xs][ys] == 'K') {
+		kralPoloha[barva][0] = xe;
+		kralPoloha[barva][1] = ye;
+	}
+
 	temp = figurky[xe][ye];
 	figurky[xe][ye] = figurky[xs][ys];
 	figurky[xs][ys] = ' ';
@@ -643,13 +649,17 @@ int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	barvy[xe][ye] = barvy[xs][ys];
 	barvy[xs][ys] = 2;
 
-	printf("sach %d, barva %d\n", kontrolaSachu(kralPoloha[barva][0], kralPoloha[barva][1], barva), barva);
+	printf("pozice kral: %c%d", kralPoloha[barva][1] + 97, kralPoloha[barva][0] + 1);
+
 	if (kontrolaSachu(kralPoloha[barva][0], kralPoloha[barva][1], barva)) {
-		printf("pes");
 		figurky[xs][ys] = figurky[xe][ye];
 		figurky[xe][ye] = temp;
 		barvy[xs][ys] = barvy[xe][ye];
 		barvy[xe][ye] = tempBarva;
+		if (figurky[xs][ys] == 'K') {
+			kralPoloha[barva][0] = xs;
+			kralPoloha[barva][1] = ys;
+		}
 		return 0;
 	}
 	return 1;
@@ -659,6 +669,7 @@ int main() {
 	int cisloTahu = 1;
 
 	while (!konec) {
+		sach:
 		//system("cls");
 		printf("\n");
 		vypisSachovnice(figurky, barvy);
@@ -669,16 +680,19 @@ int main() {
 		int aktualniBarva = cisloTahu % 2;
 
 		if (aktualniBarva) {
+			printf("\033[36m\033[40m");
 			printf("\nhraje bila");
+			printf("\033[0m");
 		}
 		else {
+			printf("\033[31m\033[40m");
 			printf("\nhraje cerna");
+			printf("\033[0m");
 		}
-		/*
-		while (kontrolaSachu(kralPoloha[aktualniBarva][0], kralPoloha[aktualniBarva][1], 1)) {
-
+		
+		if (kontrolaSachu(kralPoloha[aktualniBarva][0], kralPoloha[aktualniBarva][1], aktualniBarva)) {
+			printf("\nmas SACH");
 		}
-		*/
 
 		while (true) {
 			printf("\nzadejte policko, ze ktereho tahnete: ");
@@ -729,18 +743,14 @@ int main() {
 			if (existencePolicka(xe, ye)) {
 				if (aktualniBarva != barvy[xe][ye]) {
 					for (int i = 0; i < moznePohybyIndex; i++) {
-						if (moznePohyby[i][0] == xe && moznePohyby[i][1] == ye) {
+						if (moznePohyby[i][0] == xe && moznePohyby[i][1] == ye) {						
 							if (pohyb(xs, ys, xe, ye, aktualniBarva)) {
-								if (figurky[xe][ye] == 'K') {
-									kralPoloha[aktualniBarva][0] = xe;
-									kralPoloha[aktualniBarva][1] = ye;
-								}
-							}
-							else {
-								printf("\ntah nelze provest X");
+								end = 0;
 								break;
 							}
-							end = 0;
+							else {
+								goto sach;
+							}
 							break;
 						}
 						// upravit
