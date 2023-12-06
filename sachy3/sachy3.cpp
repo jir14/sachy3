@@ -523,16 +523,21 @@ void pohybPesak(int x, int y, int barva) {
 				moznePohyby[moznePohybyIndex][1] = y;
 				moznePohybyIndex++;
 			}
+			if (x == 1) {
+				moznePohyby[moznePohybyIndex][0] = x + 2;
+				moznePohyby[moznePohybyIndex][1] = y;
+				moznePohybyIndex++;
+			}
 		}
 		if (existencePolicka(x + 1, y - 1)) {
-			if (figurky[x + 1][y - 1] != ' ' && barvy[x + 1][y - 1] == 0) {
+			if (figurky[x + 1][y - 1] != ' ' && !barvy[x + 1][y - 1]) {
 				moznePohyby[moznePohybyIndex][0] = x + 1;
 				moznePohyby[moznePohybyIndex][1] = y - 1;
 				moznePohybyIndex++;
 			}
 		}
 		if (existencePolicka(x + 1, y + 1)) {
-			if (figurky[x + 1][y + 1] != ' ' && barvy[x + 1][y + 1] == 0) {
+			if (figurky[x + 1][y + 1] != ' ' && !barvy[x + 1][y + 1]) {
 				moznePohyby[moznePohybyIndex][0] = x + 1;
 				moznePohyby[moznePohybyIndex][1] = y + 1;
 				moznePohybyIndex++;
@@ -546,17 +551,22 @@ void pohybPesak(int x, int y, int barva) {
 				moznePohyby[moznePohybyIndex][1] = y;
 				moznePohybyIndex++;
 			}
+			if (x == 6) {
+				moznePohyby[moznePohybyIndex][0] = x - 2;
+				moznePohyby[moznePohybyIndex][1] = y;
+				moznePohybyIndex++;
+			}
 		}
 		if (existencePolicka(x - 1, y - 1)) {
-			if (figurky[x - 1][y - 1] != ' ' && barvy[x - 1][y - 1] == 1) {
+			if (figurky[x - 1][y - 1] != ' ' && barvy[x - 1][y - 1]) {
 				moznePohyby[moznePohybyIndex][0] = x - 1;
 				moznePohyby[moznePohybyIndex][1] = y - 1;
 				moznePohybyIndex++;
 			}
 		}
-		if (existencePolicka(x + 1, y + 1)) {
-			if (figurky[x + 1][y + 1] != ' ' && barvy[x + 1][y + 1] == 1) {
-				moznePohyby[moznePohybyIndex][0] = x + 1;
+		if (existencePolicka(x - 1, y + 1)) {
+			if (figurky[x - 1][y + 1] != ' ' && barvy[x - 1][y + 1]) {
+				moznePohyby[moznePohybyIndex][0] = x - 1;
 				moznePohyby[moznePohybyIndex][1] = y + 1;
 				moznePohybyIndex++;
 			}
