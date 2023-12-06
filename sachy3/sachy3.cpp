@@ -3,11 +3,14 @@
 
 #include "sachy3.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 int kralPoloha[2][2] = { {7,3}, {0,3} };
 int moznePohyby[64][2] = { {} };
 int moznePohybyIndex = 0;
 int konec = 0;
+char hrac1Jmeno[10] = {};
+char hrac2Jmeno[10] = {};
 
 // sachovnice (nemenne)
 // 0 - cerna, 1 - bila 
@@ -665,7 +668,103 @@ int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	return 1;
 }
 
+void ulozitHru(char cislo,int barva) {
+	char save[150] = {};
+	int ukazatel = 0;
+
+	FILE* fptr;
+	char cisloSavu[2] = { cislo + '0'};
+
+	fptr = fopen(cisloSavu, "w");
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			save[ukazatel] = barvy[i][j] + '0';
+			ukazatel++;
+		}
+	}
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			save[ukazatel] = figurky[i][j];
+			ukazatel++;
+		}
+	}
+	for (int i = 0; i < 9; i++) {
+		save[ukazatel] = hrac1Jmeno[i];
+		ukazatel++;
+	}
+	for (int i = 0; i < 9; i++) {
+		save[ukazatel] = hrac2Jmeno[i];
+		ukazatel++;
+	}
+	printf("%s", save);
+	save[ukazatel] = barva + '0';
+
+	fprintf(fptr, save);
+
+	fclose(fptr);
+}
+
+void nacistHru(int cislo) {
+	char save[150];
+	int ukazatel = 0;
+	int cisloTahu;
+
+	FILE* fptr;
+	char cisloHry[] = { cislo + 0 };
+	fptr = fopen(cisloHry, "r");
+
+	fgets(save, 150, fptr);
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			barvy[i][j] = save[ukazatel];
+			ukazatel++;
+		}
+	}
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			figurky[i][j] = save[ukazatel];
+			ukazatel++;
+		}
+	}
+	for (int i = 0; i < 9; i++) {
+		hrac1Jmeno[i] = save[ukazatel];
+		ukazatel++;
+	}
+	for (int i = 0; i < 9; i++) {
+		hrac2Jmeno[i] = save[ukazatel];
+		ukazatel++;
+	}
+	cisloTahu = save[ukazatel];
+
+	fclose(fptr);
+}
+
+void menu(){
+	char volba;
+	printf("Vytejte ve hre SACHY!\n");
+	printf("hrat - h\nnacist - n\n");
+	scanf(" %c", &volba);
+
+	if (volba == 'h') {
+		printf("zadejte jmeno bileho hrace: ");
+		scanf(" %s", &hrac1Jmeno);
+		printf("\nzadejte jmeno cerneho hrace: ");
+		scanf(" %s", &hrac2Jmeno);
+		getchar();
+	}
+	if (volba == 'n') {
+		int cisloHry;
+		printf("zadejte cislo ulozene hry: ");
+		scanf(" %d", &cisloHry);
+		nacistHru(cisloHry);
+	}
+}
+
 int main() {
+	menu();
+
 	int cisloTahu = 1;
 
 	while (!konec) {
@@ -675,18 +774,19 @@ int main() {
 		vypisSachovnice(figurky, barvy);
 		int xs, xe;
 		char ys, ye;
+		int end = 1;
 		moznePohybyIndex = 0;
 
 		int aktualniBarva = cisloTahu % 2;
 
 		if (aktualniBarva) {
 			printf("\033[36m\033[40m");
-			printf("\nhraje bila");
+			printf("\nhraje %s", hrac1Jmeno);
 			printf("\033[0m");
 		}
 		else {
 			printf("\033[31m\033[40m");
-			printf("\nhraje cerna");
+			printf("\nhraje %s", hrac2Jmeno);
 			printf("\033[0m");
 		}
 		
@@ -697,6 +797,11 @@ int main() {
 		while (true) {
 			printf("\nzadejte policko, ze ktereho tahnete: ");
 			scanf(" %c%d", &ys, &xs);
+			if (ys == 's') {
+				ulozitHru(xs, aktualniBarva);
+				end = 0;
+				break;
+			}
 			xs = xs - 1;
 			ys = ys - 97;
 			printf("\n");
@@ -732,8 +837,6 @@ int main() {
 			printf(" %c%d ", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
 		}
 		printf("\n");
-		
-		int end = 1;
 
 		while (end) {
 			printf("\nzadejte policko, na ktere tahnete: ");
