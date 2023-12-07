@@ -148,7 +148,7 @@ int kontrolaSachu(int x, int y, int barva) {
 	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x - i, y + i)) {
 			if (figurky[x - i][y + i] != ' ') {
-				if ((figurky[x - i][y + i] == 'V' || figurky[x - i][y + i] == 'Q') && barvy[x - i][y + i] != barva) {
+				if ((figurky[x - i][y + i] == 'S' || figurky[x - i][y + i] == 'Q') && barvy[x - i][y + i] != barva) {
 					return 1;
 				}
 				break;
@@ -157,7 +157,7 @@ int kontrolaSachu(int x, int y, int barva) {
 
 		if (existencePolicka(x + i, y - i)) {
 			if (figurky[x + i][y - i] != ' ') {
-				if ((figurky[x + i][y - i] == 'V' || figurky[x + i][y - i] == 'Q') && barvy[x + i][y - i] != barva) {
+				if ((figurky[x + i][y - i] == 'S' || figurky[x + i][y - i] == 'Q') && barvy[x + i][y - i] != barva) {
 					return 1;
 				}
 				break;
@@ -169,7 +169,7 @@ int kontrolaSachu(int x, int y, int barva) {
 	for (int i = 1; i < 8; i++) {
 		if (existencePolicka(x - i, y - i)) {
 			if (figurky[x - i][y - i] != ' ') {
-				if ((figurky[x - i][y - i] == 'V' || figurky[x - i][y - i] == 'Q') && barvy[x - i][y - i] != barva) {
+				if ((figurky[x - i][y - i] == 'S' || figurky[x - i][y - i] == 'Q') && barvy[x - i][y - i] != barva) {
 					return 1;
 				}
 				break;
@@ -178,7 +178,7 @@ int kontrolaSachu(int x, int y, int barva) {
 
 		if (existencePolicka(x + i, y + i)) {
 			if (figurky[x + i][y + i] != ' ') {
-				if ((figurky[x + i][y + i] == 'V' || figurky[x + i][y + i] == 'Q') && barvy[x + i][y + i] != barva) {
+				if ((figurky[x + i][y + i] == 'S' || figurky[x + i][y + i] == 'Q') && barvy[x + i][y + i] != barva) {
 					return 1;
 				}
 				break;
@@ -652,8 +652,6 @@ int pohyb(int xs, int ys, int xe, int ye, int barva) {
 	barvy[xe][ye] = barvy[xs][ys];
 	barvy[xs][ys] = 2;
 
-	printf("pozice kral: %c%d", kralPoloha[barva][1] + 97, kralPoloha[barva][0] + 1);
-
 	if (kontrolaSachu(kralPoloha[barva][0], kralPoloha[barva][1], barva)) {
 		figurky[xs][ys] = figurky[xe][ye];
 		figurky[xe][ye] = temp;
@@ -751,10 +749,25 @@ void nacistHru(int cislo, int* cisloTahu) {
 	fclose(fptr);
 }
 
+void ovladani() {
+	system("cls");
+	printf("\nOvladani:");
+	printf("\npat - zadani tahu jako k1");
+	printf("\nulozeni - zadani tahu jako sx (x - cislo ulozeni 0-9)");
+	printf("\nnacitani ulozene hry - jen cislo ulozeni");
+	printf("\nuznani prohry (sach mat) - zadani tahu m1");
+	printf("\nnavrat do menu bez ulozeni behem hry - q");
+	printf("\n");
+	getchar();
+	getchar();
+}
+
 void menu(int* cisloTahu){
 	char volba;
+	zacatek:
+	system("cls");
 	printf("Vytejte ve hre SACHY!\n");
-	printf("hrat - h\nnacist - n\nukoncit - q\n");
+	printf("hrat - h\nnacist - n\novladani - o\nukoncit - q\n");
 	scanf(" %c", &volba);
 
 	if (volba == 'h') {
@@ -769,19 +782,13 @@ void menu(int* cisloTahu){
 		scanf(" %d", &cisloHry);
 		nacistHru(cisloHry, cisloTahu);
 	}
+	if (volba == 'o') {
+		ovladani();
+		goto zacatek;
+	}
 	if (volba == 'q') {
 		exit(0);
 	}
-}
-
-void vypisBarvy() {
-	for (int i = 0; i < 8; i++) {
-		printf("\n");
-		for (int j = 0; j < 8; j++) {
-			printf("%d", barvy[i][j]);
-		}
-	}
-	printf("\n");
 }
 
 int main() {
@@ -789,13 +796,12 @@ int main() {
 	system("cls");
 	int cisloTahu = 1;
 	menu(&cisloTahu);
+	system("cls");
 
 	while (!konec) {
+		int patInt = 0;
 		sach:
-		system("cls");
-		//printf("\n");
 		vypisSachovnice(figurky, barvy);
-		//vypisBarvy();
 		int xs, xe;
 		char ys, ye;
 		int end = 1;
@@ -821,10 +827,42 @@ int main() {
 		while (true) {
 			printf("\nzadejte policko, ze ktereho tahnete: ");
 			scanf(" %c%d", &ys, &xs);
+			if (ys == 'm') {
+				if (aktualniBarva) {
+					printf("\nhru vyhrava \033[31m\033[40m%s\033[0m\n", hrac2Jmeno);
+				}
+				else {
+					printf("\nhru vyhrava \033[36m\033[40m%s\033[0m\n", hrac2Jmeno);
+				}
+				getchar();
+				getchar();
+				goto menu;
+			}
 			if (ys == 's') {
 				ulozitHru(xs, aktualniBarva);
 				end = 0;
 				goto menu;
+			}
+			if (ys == 'q') {
+				goto menu;
+			}
+			if (ys == 'k') {
+				pat:
+				cisloTahu++;
+				if (patInt) {
+					char patChar;
+					printf("\nchcete ukoncit hru patem (a/n): ");
+					scanf(" %c", &patChar);
+					if (patChar == 'k') {
+						goto menu;
+					}
+					else {
+						system("cls");
+						goto sach;
+					}
+				}
+				patInt++;
+				goto pat;
 			}
 			xs = xs - 1;
 			ys = ys - 97;
@@ -856,6 +894,11 @@ int main() {
 			}
 			printf("\nspatne zvolene policko");
 		}
+		if (!moznePohybyIndex) {
+			printf("\ns touto figurkou nemuzes hnout\n");
+			continue;
+		}
+
 		printf("\nmozny tah:");
 		for (int i = 0; i < moznePohybyIndex; i++) {
 			printf(" %c%d ", moznePohyby[i][1]+97, moznePohyby[i][0]+1);
@@ -876,13 +919,14 @@ int main() {
 								break;
 							}
 							else {
+								system("cls");
 								goto sach;
 							}
 							break;
 						}
 						// upravit
 						else {
-							printf("\ntah nelze provest");
+							//printf("\ntah nelze provest");
 						}
 					}
 				}
@@ -894,6 +938,8 @@ int main() {
 				printf("\npolicko neexistuje");
 			}
 		}
+		//system("cls");
+		printf("\n");
 		cisloTahu++;
 	}
 }
