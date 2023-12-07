@@ -3,7 +3,7 @@
 #
 
 # Přidejte zdrojový kód ke spustitelnému souboru tohoto projektu.
-add_executable (sachy3 "sachy3.cpp" "sachy3.h")
+add_executable (sachy3 "sachy3.cpp" "sachy3.h" "sachovnice.h" "sachovnice.cpp" "pohyby.cpp" "pohyby.h" "ui.cpp" "ui.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET sachy3 PROPERTY CXX_STANDARD 20)
